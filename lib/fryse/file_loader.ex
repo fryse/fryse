@@ -12,11 +12,14 @@ defmodule Fryse.FileLoader do
   end
 
   def load_content_file(path) do
-    # TODO: Make frontmatter optional, probably via `cond`
+    content = path |> File.read!()
+
     [frontmatter, content] =
-      path
-      |> File.read!()
-      |> String.split(~r/\n-{3,}\n/, parts: 2)
+      case String.split(content, ~r/\n-{3,}\n/, parts: 2) do
+        [frontmatter, content] -> [frontmatter, content]
+        [content] -> ["", content]
+        _ -> ["", ""]
+      end
 
     {:ok, parsed_frontmatter} = parse_yaml(frontmatter, path)
     {:ok, parsed_content} = parse(content, path, Path.extname(path))
