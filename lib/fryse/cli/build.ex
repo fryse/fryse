@@ -5,5 +5,7 @@ defmodule Fryse.CLI.Build do
     "."
     |> Fryse.index()
     |> IO.inspect()
+    |> Fryse.build()
+    |> IO.inspect()
   end
 end
