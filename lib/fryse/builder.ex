@@ -1,6 +1,8 @@
 defmodule Fryse.Builder do
   @moduledoc false
 
+  alias Fryse.Renderer
+
   def build(%Fryse{config: config} = fryse) do
     with :ok <- clean(),
          :ok <- setup(),
@@ -58,6 +60,8 @@ defmodule Fryse.Builder do
   end
 
   defp render_file(file, fryse, path) do
-    Fryse.Renderer.render_file(file, fryse, path)
+    if !String.starts_with?(file.name, "_") do
+      Renderer.render_file(file, fryse, path)
+    end
   end
 end
