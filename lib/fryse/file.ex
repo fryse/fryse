@@ -3,5 +3,5 @@ defmodule Fryse.File do
 
   defstruct name: nil,
             path: nil,
-            content: []
+            document: nil
 end

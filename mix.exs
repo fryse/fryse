@@ -14,7 +14,7 @@ defmodule Fryse.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :mix],
+      extra_applications: [:logger, :mix, :eex],
       mod: {Fryse.Application, []}
     ]
   end

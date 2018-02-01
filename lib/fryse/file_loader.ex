@@ -1,7 +1,7 @@
 defmodule Fryse.FileLoader do
   @moduledoc false
 
-  alias Fryse.Content
+  alias Fryse.Document
 
   def load_file(path) do
     ext = Path.extname(path)
@@ -24,12 +24,12 @@ defmodule Fryse.FileLoader do
     {:ok, parsed_frontmatter} = parse_yaml(frontmatter, path)
     {:ok, parsed_content} = parse(content, path, Path.extname(path))
 
-    content = %Content{
+    document = %Document{
       frontmatter: parsed_frontmatter,
       content: parsed_content
     }
 
-    {:ok, content}
+    {:ok, document}
   end
 
   defp parse(content, path, ".yaml"), do: parse(content, path, ".yml")
@@ -38,11 +38,12 @@ defmodule Fryse.FileLoader do
   defp parse(content, _path, ".md"), do: parse_markdown(content)
   defp parse(content, _, _), do: {:ok, content}
 
-  defp parse_yaml(content, path) do
+  def parse_yaml(content, path) do
     try do
       parsed =
         content
         |> YamlElixir.read_from_string()
+        |> atom_key_map()
 
       {:ok, parsed}
     catch
@@ -54,4 +55,13 @@ defmodule Fryse.FileLoader do
     {status, content, _} = Earmark.as_html(content)
     {status, content}
   end
+
+  defp atom_key_map(map) when is_map(map) do
+    Enum.reduce(map, %{}, fn {key, value}, result ->
+      Map.put(result, String.to_atom(key), atom_key_map(value))
+    end)
+  end
+
+  defp atom_key_map(list) when is_list(list), do: Enum.map(list, &atom_key_map/1)
+  defp atom_key_map(value), do: value
 end

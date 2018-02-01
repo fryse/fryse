@@ -61,7 +61,7 @@ defmodule Fryse.Indexer do
   defp index_content_folder(path) do
     cond do
       File.regular?(path) ->
-        {:ok, content} = FileLoader.load_content_file(path)
+        {:ok, document} = FileLoader.load_content_file(path)
 
         # TODO: Do this properly. Maybe use basename() and handle html.eex things separately
         name =
@@ -73,7 +73,7 @@ defmodule Fryse.Indexer do
         %Fryse.File{
           name: name,
           path: path,
-          content: content
+          document: document
         }
 
       File.dir?(path) ->

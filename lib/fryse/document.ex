@@ -1,4 +1,4 @@
-defmodule Fryse.Content do
+defmodule Fryse.Document do
   @moduledoc false
 
   defstruct frontmatter: %{},
