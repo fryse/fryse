@@ -59,7 +59,8 @@ defmodule Fryse.Renderer do
   def include(%Page{} = page, file, assigns) do
     path = Path.join("./themes/#{page.fryse.config.theme}/includes/", file)
 
-    all_assigns = [fryse: page.fryse, config: page.fryse.config, data: page.fryse.data] ++ assigns
+    all_assigns =
+      [page: page, fryse: page.fryse, config: page.fryse.config, data: page.fryse.data] ++ assigns
 
     EEx.eval_file(path, [assigns: all_assigns], functions: functions())
   end
@@ -70,7 +71,8 @@ defmodule Fryse.Renderer do
 
   defp functions() do
     [
-      {Fryse.Renderer, [include: 3, render: 2]}
+      {Fryse.Renderer, [include: 3, render: 2]},
+      {Fryse.TemplateHelpers, [is_active: 2, is_active: 3, is_active: 4]}
     ]
   end
 end
