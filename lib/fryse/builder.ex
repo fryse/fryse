@@ -59,9 +59,6 @@ defmodule Fryse.Builder do
     end
   end
 
-  defp render_file(file, fryse, path) do
-    if !String.starts_with?(file.name, "_") do
-      Renderer.render_file(file, fryse, path)
-    end
-  end
+  defp render_file(%Fryse.File{excluded: true}, _, _), do: :ok
+  defp render_file(file, fryse, path), do: Renderer.render_file(file, fryse, path)
 end

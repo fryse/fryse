@@ -70,9 +70,12 @@ defmodule Fryse.Indexer do
           |> String.split(".")
           |> Enum.at(0)
 
+        excluded = String.starts_with?(name, "_")
+
         %Fryse.File{
           name: name,
           path: path,
+          excluded: excluded,
           document: document
         }
 
