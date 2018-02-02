@@ -40,13 +40,21 @@ defmodule Fryse.Renderer do
     )
   end
 
+  def include(%Fryse{} = fryse, file, assigns) do
+    path = Path.join("./themes/#{fryse.config.theme}/includes/", file)
+
+    all_assigns = [fryse: fryse, config: fryse.config, data: fryse.data] ++ assigns
+
+    EEx.eval_file(path, [assigns: all_assigns], functions: functions())
+  end
+
   defp get_layout(_file, %{theme: theme}) do
     "./themes/#{theme}/layouts/default.html.eex"
   end
 
   defp functions() do
     [
-      {Fryse.Renderer, [render: 2]}
+      {Fryse.Renderer, [include: 3, render: 2]}
     ]
   end
 end
