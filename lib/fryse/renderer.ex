@@ -1,49 +1,65 @@
 defmodule Fryse.Renderer do
   @moduledoc false
 
+  alias Fryse.Page
   alias Fryse.Document
 
-  def render_file(%Fryse.File{document: document} = file, fryse, path) do
+  def render_file(%Fryse.File{} = file, fryse, path) do
+    destination = Path.join(path, [file.name, ".html"])
+
+    url_path =
+      destination
+      |> String.replace("_site", "")
+      |> String.replace("index.html", "")
+
+    page = %Page{
+      fryse: fryse,
+      file: file,
+      path: url_path
+    }
+
     content =
       EEx.eval_file(
         get_layout(file, fryse.config),
         [
           assigns: [
-            fryse: fryse,
-            config: fryse.config,
-            data: fryse.data,
-            document: document,
-            frontmatter: document.frontmatter,
-            content: document.content
+            page: page,
+            fryse: page.fryse,
+            config: page.fryse.config,
+            data: page.fryse.data,
+            document: page.file.document,
+            frontmatter: page.file.document.frontmatter,
+            content: page.file.document.content
           ]
         ],
         functions: functions()
       )
 
-    File.write(Path.join(path, [file.name, ".html"]), content)
+    File.write(destination, content)
   end
 
-  def render(%Fryse{} = fryse, %Document{} = document) do
+  def render(%Page{} = page, %Document{} = document) do
     EEx.eval_string(
       document.content,
       [
         assigns: [
-          fryse: fryse,
-          config: fryse.config,
-          data: fryse.data,
-          document: document,
-          frontmatter: document.frontmatter,
-          content: document.content
+          page: page,
+          fryse: page.fryse,
+          config: page.fryse.config,
+          data: page.fryse.data,
+          document: page.file.document,
+          frontmatter: page.file.document.frontmatter,
+          content: page.file.document.content
         ]
       ],
       functions: functions()
     )
   end
 
-  def include(%Fryse{} = fryse, file, assigns) do
-    path = Path.join("./themes/#{fryse.config.theme}/includes/", file)
+  def include(%Page{} = page, file, assigns) do
+    path = Path.join("./themes/#{page.fryse.config.theme}/includes/", file)
 
-    all_assigns = [fryse: fryse, config: fryse.config, data: fryse.data] ++ assigns
+    all_assigns = [fryse: page.fryse, config: page.fryse.config, data: page.fryse.data] ++ assigns
 
     EEx.eval_file(path, [assigns: all_assigns], functions: functions())
   end
