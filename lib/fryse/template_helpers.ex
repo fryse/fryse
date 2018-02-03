@@ -3,6 +3,8 @@ defmodule Fryse.TemplateHelpers do
 
   alias Fryse.Page
 
+  def asset(%Page{}, path), do: Path.join("/assets", to_string(path))
+
   def is_active(%Page{} = page, path), do: is_active(page, path, true, nil)
   def is_active(%Page{} = page, path, when_active), do: is_active(page, path, when_active, nil)
 

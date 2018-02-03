@@ -59,7 +59,13 @@ defmodule Fryse.Renderer do
   defp functions() do
     [
       {Fryse.Renderer, [include: 3, render: 2]},
-      {Fryse.TemplateHelpers, [is_active: 2, is_active: 3, is_active: 4]}
+      {Fryse.TemplateHelpers,
+       [
+         asset: 2,
+         is_active: 2,
+         is_active: 3,
+         is_active: 4
+       ]}
     ]
   end
 end
