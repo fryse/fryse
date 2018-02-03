@@ -9,8 +9,9 @@ defmodule Fryse.Builder do
          :ok <- setup(),
          :ok <- copy_theme_assets(config),
          :ok <- copy_custom_files(config),
-         result <- build_content(fryse) do
-      result
+         results <- build_content(fryse) do
+      show_results(results)
+      :ok
     end
   end
 
@@ -42,7 +43,16 @@ defmodule Fryse.Builder do
   defp copy_custom_files(_), do: :ok
 
   defp build_content(%Fryse{config: config, content: content} = fryse) do
-    build_folder(content, fryse, "_site/") |> List.flatten()
+    build_folder(content, fryse, "_site/")
+    |> List.flatten()
+    |> sort_by_status()
+  end
+
+  defp sort_by_status(file_events) do
+    Enum.reduce(file_events, %{ok: [], excluded: [], error: []}, fn {status, event}, acc ->
+      new_events = [event | Map.get(acc, status)]
+      Map.put(acc, status, new_events)
+    end)
   end
 
   defp build_folder(%Fryse.Folder{children: children}, fryse, path) do
@@ -89,5 +99,48 @@ defmodule Fryse.Builder do
 
   defp destination_path(path, file) do
     Path.join(path, [file.name, ".html"])
+  end
+
+  defp show_results(%{ok: ok, excluded: excluded, error: error}) do
+    show_ok_results(ok)
+    show_excluded_results(excluded)
+    show_error_results(error)
+  end
+
+  defp show_ok_results(results) do
+    IO.puts("Files Created: #{Enum.count(results)}")
+  end
+
+  defp show_excluded_results(results) when length(results) > 0 do
+    IO.puts("Files Excluded: #{Enum.count(results)}")
+
+    for {:file, path} <- results do
+      IO.puts(path)
+    end
+  end
+
+  defp show_excluded_results(_), do: nil
+
+  defp show_error_results(results) when length(results) > 0 do
+    IO.puts("Files Not Rendered: #{Enum.count(results)}")
+
+    for error <- results do
+      show_file_error(error)
+    end
+  end
+
+  defp show_error_results(_), do: nil
+
+  defp show_file_error({:file, source, _destination, error}) do
+    error_description =
+      case error do
+        %{description: description, file: "nofile", line: line} ->
+          "#{description} in #{source} on line #{line} (line counting starts below the frontmatter section)"
+
+        %{description: description, file: file, line: line} ->
+          "#{description} in #{file} on line #{line}"
+      end
+
+    IO.puts("#{source}: #{error_description}")
   end
 end
