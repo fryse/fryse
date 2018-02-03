@@ -64,7 +64,8 @@ defmodule Fryse.Renderer do
          asset: 2,
          is_active: 2,
          is_active: 3,
-         is_active: 4
+         is_active: 4,
+         link_to: 2
        ]}
     ]
   end
