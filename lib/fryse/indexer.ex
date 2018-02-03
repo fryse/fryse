@@ -8,11 +8,13 @@ defmodule Fryse.Indexer do
          {:ok, config} <- load_config(path),
          {:ok, data} <- load_data(path),
          {:ok, content} <- load_content(path) do
-      %Fryse{
+      fryse = %Fryse{
         config: config,
         data: data,
         content: content
       }
+
+      {:ok, fryse}
     end
   end
 
