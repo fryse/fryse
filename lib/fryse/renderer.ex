@@ -4,23 +4,10 @@ defmodule Fryse.Renderer do
   alias Fryse.Page
   alias Fryse.Document
 
-  def render_file(%Fryse.File{} = file, fryse, path) do
-    destination = Path.join(path, [file.name, ".html"])
-
-    url_path =
-      destination
-      |> String.replace("_site", "")
-      |> String.replace("index.html", "")
-
-    page = %Page{
-      fryse: fryse,
-      file: file,
-      path: url_path
-    }
-
+  def render_page(%Page{} = page, destination) do
     content =
       EEx.eval_file(
-        get_layout(file, fryse.config),
+        get_layout(page.file, page.fryse.config),
         [
           assigns: [
             page: page,

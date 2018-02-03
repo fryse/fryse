@@ -2,14 +2,15 @@ defmodule Fryse.Builder do
   @moduledoc false
 
   alias Fryse.Renderer
+  alias Fryse.Page
 
   def build(%Fryse{config: config} = fryse) do
     with :ok <- clean(),
          :ok <- setup(),
          :ok <- copy_theme_assets(config),
          :ok <- copy_custom_files(config),
-         :ok <- build_content(fryse) do
-      :ok
+         result <- build_content(fryse) do
+      result
     end
   end
 
@@ -41,8 +42,7 @@ defmodule Fryse.Builder do
   defp copy_custom_files(_), do: :ok
 
   defp build_content(%Fryse{config: config, content: content} = fryse) do
-    build_folder(content, fryse, "_site/")
-    :ok
+    build_folder(content, fryse, "_site/") |> List.flatten()
   end
 
   defp build_folder(%Fryse.Folder{children: children}, fryse, path) do
@@ -59,6 +59,35 @@ defmodule Fryse.Builder do
     end
   end
 
-  defp render_file(%Fryse.File{excluded: true}, _, _), do: :ok
-  defp render_file(file, fryse, path), do: Renderer.render_file(file, fryse, path)
+  defp render_file(%Fryse.File{excluded: true} = file, _, _), do: {:excluded, {:file, file.path}}
+
+  defp render_file(file, fryse, path) do
+    destination = destination_path(path, file)
+
+    url_path =
+      destination
+      |> String.replace("_site", "")
+      |> String.replace("index.html", "")
+
+    page = %Page{
+      fryse: fryse,
+      file: file,
+      path: url_path
+    }
+
+    try do
+      Renderer.render_page(page, destination)
+      {:ok, {:file, file.path, destination}}
+    rescue
+      e ->
+        {:error, {:file, file.path, destination, e}}
+    catch
+      e ->
+        {:error, {:file, file.path, destination, e}}
+    end
+  end
+
+  defp destination_path(path, file) do
+    Path.join(path, [file.name, ".html"])
+  end
 end
