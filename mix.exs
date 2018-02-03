@@ -22,7 +22,9 @@ defmodule Fryse.MixProject do
   defp deps do
     [
       {:yaml_elixir, "~> 1.3"},
-      {:earmark, "~> 1.2"}
+      {:earmark, "~> 1.2"},
+      {:cowboy, "~> 1.1"},
+      {:plug, "~> 1.4"}
     ]
   end
 

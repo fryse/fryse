@@ -12,7 +12,8 @@ defmodule Fryse.CLI do
 
   def commands() do
     [
-      {:build, Fryse.CLI.Build}
+      {:build, Fryse.CLI.Build},
+      {:serve, Fryse.CLI.Serve}
     ]
   end
 
