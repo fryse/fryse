@@ -11,7 +11,11 @@ defmodule Fryse.TemplateHelper do
   def is_active(%Page{} = page, path, when_active), do: is_active(page, path, when_active, nil)
 
   def is_active(%Page{} = page, path, when_active, when_inactive) do
-    if page.path == to_string(path), do: when_active, else: when_inactive
+    if page.path == FilePath.source_to_url(page.fryse.config, to_string(path)) do
+      when_active
+    else
+      when_inactive
+    end
   end
 
   def link_to(%Page{} = page, %Page{file: file}), do: link_to(page, file)
