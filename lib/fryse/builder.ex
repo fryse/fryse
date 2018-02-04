@@ -3,6 +3,7 @@ defmodule Fryse.Builder do
 
   alias Fryse.Renderer
   alias Fryse.Page
+  alias Fryse.FilePath
 
   def build(%Fryse{config: config} = fryse) do
     with :ok <- clean(),
@@ -60,7 +61,7 @@ defmodule Fryse.Builder do
     for entry <- children do
       case entry do
         %Fryse.File{} ->
-          render_file(entry, fryse, path)
+          render_file(entry, fryse)
 
         %Fryse.Folder{} ->
           build_folder(entry, fryse, Path.join(path, entry.name))
@@ -68,20 +69,15 @@ defmodule Fryse.Builder do
     end
   end
 
-  defp render_file(%Fryse.File{excluded: true} = file, _, _), do: {:excluded, {:file, file.path}}
+  defp render_file(%Fryse.File{excluded: true} = file, _), do: {:excluded, {:file, file.path}}
 
-  defp render_file(file, fryse, path) do
-    destination = destination_path(path, file)
-
-    url_path =
-      destination
-      |> String.replace("_site", "")
-      |> String.replace("index.html", "")
+  defp render_file(file, fryse) do
+    destination = FilePath.source_to_destination(fryse.config, file.path)
 
     page = %Page{
       fryse: fryse,
       file: file,
-      path: url_path
+      path: FilePath.source_to_url(fryse.config, file.path)
     }
 
     try do
@@ -94,9 +90,5 @@ defmodule Fryse.Builder do
       e ->
         {:error, {:file, file.path, destination, e}}
     end
-  end
-
-  defp destination_path(path, file) do
-    Path.join(path, [file.name, ".html"])
   end
 end
