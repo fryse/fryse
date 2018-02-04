@@ -1,4 +1,4 @@
-defmodule Fryse.TemplateHelpers do
+defmodule Fryse.TemplateHelper do
   @moduledoc false
 
   alias Fryse.Page
