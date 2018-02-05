@@ -58,30 +58,22 @@ defmodule Fryse.TemplateHelper do
     end
   end
 
-  defp files_filter_index(files, index) do
-    case index do
-      true ->
-        files
+  defp files_filter_index(files, true), do: files
 
-      false ->
-        files
-        |> Enum.reject(fn %File{name: name} -> name == "index" end)
-    end
+  defp files_filter_index(files, false) do
+    files
+    |> Enum.reject(fn %File{name: name} -> name == "index" end)
   end
 
-  defp files_sort(files, sort) do
-    case sort do
-      false ->
-        files
+  defp files_sort(files, false), do: files
 
-      arg ->
-        [key, sort] = Sort.parse(arg)
+  defp files_sort(files, arg) do
+    [key, sort] = Sort.parse(arg)
 
-        mapper = fn file -> Map.get(file.document.frontmatter, key, 0) end
-        sorter = Sort.function(sort)
+    mapper = fn file -> Map.get(file.document.frontmatter, key, 0) end
+    sorter = Sort.function(sort)
 
-        Enum.sort_by(files, mapper, sorter)
-    end
+    Enum.sort_by(files, mapper, sorter)
   end
 
   def is_active(%Page{} = page, path), do: is_active(page, path, true, nil)
