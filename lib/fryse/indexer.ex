@@ -74,6 +74,16 @@ defmodule Fryse.Indexer do
 
         excluded = String.starts_with?(name, "_")
 
+        name =
+          case excluded do
+            true ->
+              "_" <> name = name
+              name
+
+            false ->
+              name
+          end
+
         %Fryse.File{
           name: name,
           path: path,

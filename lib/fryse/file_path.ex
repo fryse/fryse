@@ -16,7 +16,11 @@ defmodule Fryse.FilePath do
       |> Enum.drop(-1)
       |> Path.join()
 
-    path = Path.join("_site", path)
+    path =
+      case path do
+        "/" -> Path.join([".", "_site"])
+        _ -> Path.join([".", "_site", path])
+      end
 
     Path.join(path, [name, ".html"])
   end

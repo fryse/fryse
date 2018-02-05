@@ -58,10 +58,13 @@ defmodule Fryse.Renderer do
 
   defp functions() do
     [
+      {Enum, [empty?: 1]},
       {Fryse.Renderer, [include: 3, render: 2]},
       {Fryse.TemplateHelper,
        [
          asset: 2,
+         files_from: 2,
+         files_from: 3,
          is_active: 2,
          is_active: 3,
          is_active: 4,

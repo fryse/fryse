@@ -47,6 +47,13 @@ defmodule Fryse.CLI.Build do
 
         %{description: description, file: file, line: line} ->
           "#{description} in #{file} on line #{line}"
+
+        %{message: message, file: "nofile", line: line} ->
+          # for some reason, it contains the proper line number
+          "#{message} in #{source} on line #{line}"
+
+        %{message: message, file: file, line: line} ->
+          "#{message} in #{file} on line #{line}"
       end
 
     IO.puts("#{red(source)}: #{error_description}")
