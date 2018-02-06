@@ -83,10 +83,10 @@ defmodule Fryse.TemplateHelper do
   def frontmatter(data, key, default \\ nil)
 
   def frontmatter(%File{document: document}, key, default),
-    do: frontmatter(document, String.to_atom(key), default)
+    do: frontmatter(document, key, default)
 
-  def frontmatter(%Document{} = document, key, default),
-    do: frontmatter(document, String.to_atom(key), default)
+  def frontmatter(%Document{frontmatter: frontmatter}, key, default),
+    do: frontmatter(frontmatter, key, default)
 
   def frontmatter(frontmatter, key, default) when is_binary(key),
     do: frontmatter(frontmatter, String.to_atom(key), default)
