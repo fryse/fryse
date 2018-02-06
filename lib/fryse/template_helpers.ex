@@ -4,6 +4,7 @@ defmodule Fryse.TemplateHelper do
   alias Fryse.Page
   alias Fryse.File
   alias Fryse.Folder
+  alias Fryse.Document
   alias Fryse.FilePath
   alias Fryse.Sort
 
@@ -74,6 +75,27 @@ defmodule Fryse.TemplateHelper do
     sorter = Sort.function(sort)
 
     Enum.sort_by(files, mapper, sorter)
+  end
+
+  def frontmatter(%File{document: document}), do: document.frontmatter
+  def frontmatter(%Document{frontmatter: frontmatter}), do: frontmatter
+
+  def frontmatter(data, key, default \\ nil)
+
+  def frontmatter(%File{document: document}, key, default),
+    do: frontmatter(document, String.to_atom(key), default)
+
+  def frontmatter(%Document{} = document, key, default),
+    do: frontmatter(document, String.to_atom(key), default)
+
+  def frontmatter(frontmatter, key, default) when is_binary(key),
+    do: frontmatter(frontmatter, String.to_atom(key), default)
+
+  def frontmatter(frontmatter, key, default) when is_list(key),
+    do: frontmatter(frontmatter, to_string(key), default)
+
+  def frontmatter(frontmatter, key, default) do
+    Map.get(frontmatter, key, default)
   end
 
   def is_active(%Page{} = page, path), do: is_active(page, path, true, nil)
