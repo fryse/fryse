@@ -54,6 +54,9 @@ defmodule Fryse.CLI.Build do
 
         %{message: message, file: file, line: line} ->
           "#{message} in #{file} on line #{line}"
+
+        %File.Error{action: action, path: path} ->
+          "cannot #{action} #{path}"
       end
 
     IO.puts("#{red(source)}: #{error_description}")

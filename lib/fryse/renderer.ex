@@ -52,6 +52,12 @@ defmodule Fryse.Renderer do
     EEx.eval_file(path, [assigns: all_assigns], functions: functions())
   end
 
+  defp get_layout(%Fryse.File{document: %Document{frontmatter: %{layout: layout}}}, %{
+         theme: theme
+       }) do
+    "./themes/#{theme}/layouts/#{layout}.html.eex"
+  end
+
   defp get_layout(_file, %{theme: theme}) do
     "./themes/#{theme}/layouts/default.html.eex"
   end
