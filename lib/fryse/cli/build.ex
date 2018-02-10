@@ -2,7 +2,9 @@ defmodule Fryse.CLI.Build do
   @moduledoc false
 
   def run(_args) do
-    with {:ok, %Fryse{} = fryse} <- Fryse.index("."), {:ok, results} = Fryse.build(fryse) do
+    with {:ok, %Fryse{} = fryse} <- Fryse.index("."),
+         :ok <- Fryse.load_scripts(fryse),
+         {:ok, results} = Fryse.build(fryse) do
       IO.inspect(fryse)
       IO.inspect(results)
       show_results(results)
@@ -57,6 +59,9 @@ defmodule Fryse.CLI.Build do
 
         %File.Error{action: action, path: path} ->
           "cannot #{action} #{path}"
+
+        %{message: message} ->
+          "#{message} in #{source}"
       end
 
     IO.puts("#{red(source)}: #{error_description}")

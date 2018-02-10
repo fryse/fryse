@@ -3,7 +3,7 @@ defmodule Fryse do
   Documentation for Fryse.
   """
 
-  alias Fryse.{Indexer, Builder}
+  alias Fryse.{Indexer, ScriptLoader, Builder}
 
   defstruct config: nil,
             data: nil,
@@ -11,6 +11,10 @@ defmodule Fryse do
 
   def index(path) do
     Indexer.index(path)
+  end
+
+  def load_scripts(%Fryse{} = fryse) do
+    ScriptLoader.load_for(fryse)
   end
 
   def build(%Fryse{} = fryse) do
