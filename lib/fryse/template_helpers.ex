@@ -31,11 +31,15 @@ defmodule Fryse.TemplateHelper do
     excluded = Keyword.get(options, :excluded, false)
     index = Keyword.get(options, :index, false)
     sort = Keyword.get(options, :sort, false)
+    offset = Keyword.get(options, :offset, false)
+    limit = Keyword.get(options, :limit, false)
 
     content
     |> files_filter_excluded(excluded)
     |> files_filter_index(index)
     |> files_sort(sort)
+    |> files_offset(offset)
+    |> files_limit(limit)
   end
 
   defp get_content_items([name | path], content, options) do
@@ -76,6 +80,22 @@ defmodule Fryse.TemplateHelper do
 
     Enum.sort_by(files, mapper, sorter)
   end
+
+  defp files_offset(files, false), do: files
+
+  defp files_offset(files, offset) when is_integer(offset) do
+    files |> Enum.drop(offset)
+  end
+
+  defp files_offset(files, _), do: files
+
+  defp files_limit(files, false), do: files
+
+  defp files_limit(files, limit) when is_integer(limit) do
+    files |> Enum.take(limit)
+  end
+
+  defp files_limit(files, _), do: files
 
   def frontmatter(%File{document: document}), do: document.frontmatter
   def frontmatter(%Document{frontmatter: frontmatter}), do: frontmatter
