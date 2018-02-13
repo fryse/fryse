@@ -25,6 +25,8 @@ defmodule Fryse.Renderer do
     File.write(destination, content)
   end
 
+  def render(%Page{} = page, %Fryse.File{document: document}), do: render(page, document)
+
   def render(%Page{} = page, %Document{} = document) do
     EEx.eval_string(
       document.content,
