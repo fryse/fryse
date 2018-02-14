@@ -25,7 +25,8 @@ defmodule Fryse.MixProject do
       {:earmark, "~> 1.2"},
       {:cowboy, "~> 1.1"},
       {:plug, "~> 1.4"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:httpoison, "~> 1.0"}
     ]
   end
 
