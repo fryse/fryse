@@ -1,12 +1,18 @@
 defmodule Fryse.CLI.Build do
   @moduledoc false
 
-  def run(_args) do
+  def run(args) do
+    {switches, _, _} = OptionParser.parse(args, switches: [debug: :boolean])
+    debug = Keyword.get(switches, :debug, false)
+
     with {:ok, %Fryse{} = fryse} <- Fryse.index("."),
          :ok <- Fryse.load_scripts(fryse),
          {:ok, results} = Fryse.build(fryse) do
-      IO.inspect(fryse)
-      IO.inspect(results)
+      if debug do
+        IO.inspect(fryse)
+        IO.inspect(results)
+      end
+
       show_results(results)
     end
   end
