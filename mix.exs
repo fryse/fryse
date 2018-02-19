@@ -11,6 +11,7 @@ defmodule Fryse.MixProject do
       escript: escript(),
       name: "Fryse",
       description: description(),
+      package: package(),
       source_url: "https://github.com/fryse/fryse",
       homepage_url: "https://github.com/fryse/fryse",
       docs: [main: "Fryse"]
@@ -21,6 +22,14 @@ defmodule Fryse.MixProject do
     """
     Fryse is a Static Site Generator which aims to be generic and scriptable.
     """
+  end
+
+  defp package do
+    [
+      maintainers: ["Phillipp Ohlandt"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/fryse/fryse"}
+    ]
   end
 
   def application do
