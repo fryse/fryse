@@ -1,6 +1,8 @@
 defmodule Fryse do
   @moduledoc """
   Documentation for Fryse.
+
+  Full documentation will follow soon.
   """
 
   alias Fryse.{Indexer, ScriptLoader, Builder}
