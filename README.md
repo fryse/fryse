@@ -1,6 +1,8 @@
 # Fryse
 
-**Fryse is a Static Site Generator written in Elixir which aims to be generic and scriptable.**
+[![Build Status](https://travis-ci.org/fryse/fryse.svg?branch=master)](https://travis-ci.org/fryse/fryse)
+
+> Fryse is a Static Site Generator written in Elixir which aims to be generic and scriptable
 
 ## Installation
 
