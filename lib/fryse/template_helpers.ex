@@ -1,4 +1,4 @@
-defmodule Fryse.TemplateHelper do
+defmodule Fryse.TemplateHelpers do
   @moduledoc false
 
   alias Fryse.Page
@@ -118,8 +118,8 @@ defmodule Fryse.TemplateHelper do
     Map.get(frontmatter, key, default)
   end
 
-  def is_active(%Page{} = page, path), do: is_active(page, path, true, nil)
-  def is_active(%Page{} = page, path, when_active), do: is_active(page, path, when_active, nil)
+  def is_active(%Page{} = page, path), do: is_active(page, path, true, false)
+  def is_active(%Page{} = page, path, when_active), do: is_active(page, path, when_active, false)
 
   def is_active(%Page{} = page, path, when_active, when_inactive) do
     if page.path == FilePath.source_to_url(page.fryse.config, to_string(path)) do

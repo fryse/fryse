@@ -68,7 +68,7 @@ defmodule Fryse.Renderer do
     [
       {Enum, [empty?: 1]},
       {Fryse.Renderer, [include: 3, render: 2]},
-      {Fryse.TemplateHelper,
+      {Fryse.TemplateHelpers,
        [
          asset: 2,
          files_from: 2,
