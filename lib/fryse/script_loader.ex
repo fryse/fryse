@@ -1,9 +1,9 @@
 defmodule Fryse.ScriptLoader do
   @moduledoc false
 
-  def load_for(%Fryse{config: %{theme: theme}}) do
-    project_scripts = project_scripts()
-    theme_scripts = theme_scripts(theme)
+  def load_for(%Fryse{config: %{theme: theme}, source_path: source_path}) do
+    project_scripts = project_scripts(source_path)
+    theme_scripts = theme_scripts(source_path, theme)
 
     files = project_scripts ++ theme_scripts
 
@@ -13,11 +13,11 @@ defmodule Fryse.ScriptLoader do
     end
   end
 
-  defp project_scripts() do
-    Path.wildcard("./scripts/**/*.{ex,exs}")
+  defp project_scripts(source_path) do
+    Path.wildcard(Path.join(source_path, "scripts/**/*.{ex,exs}"))
   end
 
-  defp theme_scripts(theme) do
-    Path.wildcard("./themes/#{theme}/scripts/**/*.{ex,exs}")
+  defp theme_scripts(source_path, theme) do
+    Path.wildcard(Path.join(source_path, "themes/#{theme}/scripts/**/*.{ex,exs}"))
   end
 end

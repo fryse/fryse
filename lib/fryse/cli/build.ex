@@ -48,6 +48,7 @@ defmodule Fryse.CLI.Build do
   defp show_error_results(_), do: nil
 
   defp show_file_error({:file, source, _destination, error}) do
+    #TODO: no case clause matching: %UndefinedFunctionError{arity: 2, exports: nil, function: :author, module: FriseDefaultTheme, reason: nil}
     error_description =
       case error do
         %{description: description, file: "nofile", line: line} ->
@@ -57,8 +58,7 @@ defmodule Fryse.CLI.Build do
           "#{description} in #{file} on line #{line}"
 
         %{message: message, file: "nofile", line: line} ->
-          # for some reason, it contains the proper line number
-          "#{message} in #{source} on line #{line}"
+          "#{message} in #{source} on line #{line} (line counting starts below the frontmatter section)"
 
         %{message: message, file: file, line: line} ->
           "#{message} in #{file} on line #{line}"
