@@ -111,7 +111,7 @@ defmodule Fryse.TemplateHelpersTest do
 
   test "link_to/2 returns the link to the given Page, File or source file path", %{fryse: fryse} do
     file = %FryseFile{
-      path: "./content/posts/your-new-fryse-blog.md"
+      path: "content/posts/your-new-fryse-blog.md"
     }
 
     page = %Page{
@@ -123,6 +123,6 @@ defmodule Fryse.TemplateHelpersTest do
     assert "/posts/your-new-fryse-blog.html" = TemplateHelpers.link_to(page, file)
 
     assert "/posts/your-new-fryse-blog.html" =
-             TemplateHelpers.link_to(page, "./content/posts/your-new-fryse-blog.md")
+             TemplateHelpers.link_to(page, "content/posts/your-new-fryse-blog.md")
   end
 end

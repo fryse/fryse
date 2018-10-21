@@ -9,7 +9,9 @@ defmodule Fryse do
 
   defstruct config: nil,
             data: nil,
-            content: nil
+            content: nil,
+            source_path: nil,
+            destination_path: nil
 
   def index(path) do
     Indexer.index(path)

@@ -4,14 +4,19 @@ defmodule Fryse.Indexer do
   alias Fryse.FileLoader
 
   def index(path) do
-    with :ok <- check_required_files(path),
-         {:ok, config} <- load_config(path),
-         {:ok, data} <- load_data(path),
-         {:ok, content} <- load_content(path) do
+    source_path = Path.expand(path)
+    destination_path = Path.join(source_path, "_site")
+
+    with :ok <- check_required_files(source_path),
+         {:ok, config} <- load_config(source_path),
+         {:ok, data} <- load_data(source_path),
+         {:ok, content} <- load_content(source_path, source_path) do
       fryse = %Fryse{
         config: config,
         data: data,
-        content: content
+        content: content,
+        source_path: source_path,
+        destination_path: destination_path,
       }
 
       {:ok, fryse}
@@ -51,16 +56,16 @@ defmodule Fryse.Indexer do
     {:ok, data}
   end
 
-  defp load_content(path) do
+  defp load_content(path, source_path) do
     content =
       path
       |> Path.join("content")
-      |> index_content_folder()
+      |> index_content_folder(source_path)
 
     {:ok, content}
   end
 
-  defp index_content_folder(path) do
+  defp index_content_folder(path, source_path) do
     cond do
       File.regular?(path) ->
         {:ok, document} = FileLoader.load_content_file(path)
@@ -86,7 +91,7 @@ defmodule Fryse.Indexer do
 
         %Fryse.File{
           name: name,
-          path: path,
+          path: Path.relative_to(path, source_path),
           excluded: excluded,
           document: document
         }
@@ -94,9 +99,9 @@ defmodule Fryse.Indexer do
       File.dir?(path) ->
         %Fryse.Folder{
           name: Path.basename(path),
-          path: path,
+          path: Path.relative_to(path, source_path),
           children:
-            File.ls!(path) |> Enum.map(&Path.join(path, &1)) |> Enum.map(&index_content_folder/1)
+            File.ls!(path) |> Enum.map(&Path.join(path, &1)) |> Enum.map(&index_content_folder(&1, source_path))
         }
 
       true ->

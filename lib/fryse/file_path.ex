@@ -1,7 +1,7 @@
 defmodule Fryse.FilePath do
   @moduledoc false
 
-  def source_to_destination(config, "./content" <> path), do: source_to_destination(config, path)
+  def source_to_destination(config, "content" <> path), do: source_to_destination(config, path)
 
   def source_to_destination(_config, path) do
     name =
@@ -14,18 +14,23 @@ defmodule Fryse.FilePath do
       path
       |> Path.split()
       |> Enum.drop(-1)
-      |> Path.join()
+
+
+    path = case path do
+      [] -> ""
+      _ -> Path.join(path)
+    end
 
     path =
       case path do
-        "/" -> Path.join([".", "_site"])
-        _ -> Path.join([".", "_site", path])
+        "/" <> rest -> rest
+        _ -> path
       end
 
     Path.join(path, [name, ".html"])
   end
 
-  def source_to_url(config, "./content" <> path), do: source_to_url(config, path)
+  def source_to_url(config, "content" <> path), do: source_to_url(config, path)
 
   def source_to_url(_config, path) do
     path = Path.join("/", path)
