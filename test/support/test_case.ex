@@ -49,11 +49,11 @@ defmodule Fryse.TestCase do
       },
       content: %Folder{
         name: "content",
-        path: "./content",
+        path: "content",
         children: [
           %FryseFile{
             name: "posts",
-            path: "./content/posts.html.eex",
+            path: "content/posts.html.eex",
             excluded: false,
             document: %Document{
               frontmatter: %{title: "Posts"},
@@ -77,11 +77,11 @@ defmodule Fryse.TestCase do
           },
           %Folder{
             name: "posts",
-            path: "./content/posts",
+            path: "content/posts",
             children: [
               %FryseFile{
                 name: "index",
-                path: "./content/posts/index.md",
+                path: "content/posts/index.md",
                 excluded: false,
                 document: %Document{
                   frontmatter: %{
@@ -94,7 +94,7 @@ defmodule Fryse.TestCase do
               },
               %FryseFile{
                 name: "draft-post",
-                path: "./content/posts/_draft-post.md",
+                path: "content/posts/_draft-post.md",
                 excluded: true,
                 document: %Document{
                   frontmatter: %{
@@ -112,7 +112,7 @@ defmodule Fryse.TestCase do
               },
               %FryseFile{
                 name: "second-post",
-                path: "./content/posts/second-post.md",
+                path: "content/posts/second-post.md",
                 excluded: false,
                 document: %Document{
                   frontmatter: %{
@@ -130,7 +130,7 @@ defmodule Fryse.TestCase do
               },
               %FryseFile{
                 name: "your-new-fryse-blog",
-                path: "./content/posts/your-new-fryse-blog.md",
+                path: "content/posts/your-new-fryse-blog.md",
                 excluded: false,
                 document: %Document{
                   frontmatter: %{
@@ -151,7 +151,7 @@ defmodule Fryse.TestCase do
           },
           %FryseFile{
             name: "index",
-            path: "./content/index.html.eex",
+            path: "content/index.html.eex",
             excluded: false,
             document: %Document{
               frontmatter: %{layout: "home", title: "Home"},
