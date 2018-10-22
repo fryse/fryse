@@ -7,7 +7,7 @@ defmodule Fryse.Renderer do
   def render_page(%Page{} = page, destination) do
     content =
       EEx.eval_file(
-        get_layout(page.file, page.fryse.config),
+        get_layout(page.file, page.fryse),
         [
           assigns: [
             page: page,
@@ -46,7 +46,7 @@ defmodule Fryse.Renderer do
   end
 
   def include(%Page{} = page, file, assigns) do
-    path = Path.join("./themes/#{page.fryse.config.theme}/includes/", file)
+    path = Path.join([page.fryse.source_path, "themes/#{page.fryse.config.theme}/includes/", file])
 
     all_assigns =
       [page: page, fryse: page.fryse, config: page.fryse.config, data: page.fryse.data] ++ assigns
@@ -54,14 +54,12 @@ defmodule Fryse.Renderer do
     EEx.eval_file(path, [assigns: all_assigns], functions: functions())
   end
 
-  defp get_layout(%Fryse.File{document: %Document{frontmatter: %{layout: layout}}}, %{
-         theme: theme
-       }) do
-    "./themes/#{theme}/layouts/#{layout}.html.eex"
+  defp get_layout(%Fryse.File{document: %Document{frontmatter: %{layout: layout}}}, %Fryse{} = fryse) do
+    Path.join(fryse.source_path, "themes/#{fryse.config.theme}/layouts/#{layout}.html.eex")
   end
 
-  defp get_layout(_file, %{theme: theme}) do
-    "./themes/#{theme}/layouts/default.html.eex"
+  defp get_layout(_file, %Fryse{} = fryse) do
+    Path.join(fryse.source_path, "themes/#{fryse.config.theme}/layouts/default.html.eex")
   end
 
   defp functions() do
