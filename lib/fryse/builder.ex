@@ -90,6 +90,7 @@ defmodule Fryse.Builder do
     new_page = %Page{page | fryse: fryse}
 
     try do
+      File.mkdir_p(Path.dirname(destination))
       Renderer.render_page(new_page, destination)
       {:ok, {:file, file.path, destination}}
     rescue
