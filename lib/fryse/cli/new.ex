@@ -1,5 +1,17 @@
 defmodule Fryse.CLI.New do
-  @moduledoc false
+  use Fryse.Command
+
+  @shortdoc "Creates a new Fryse project"
+
+  @moduledoc """
+  Creates a new Fryse project.
+  It expects the name of the project as argument.
+
+      fryse new NAME
+
+  A project will be created in a new folder named after the project.
+  The project name will also be used to name script modules and for the example config.
+  """
 
   alias HTTPoison.Response
 

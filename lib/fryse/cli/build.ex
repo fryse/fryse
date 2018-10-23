@@ -1,5 +1,14 @@
 defmodule Fryse.CLI.Build do
-  @moduledoc false
+  use Fryse.Command
+
+  @shortdoc "Builds static files"
+
+  @moduledoc """
+  Builds static files. It expects the Fryse project to
+  be in the folder in which the command is executed in.
+
+  The static files will be written to `_site`.
+  """
 
   def run(args) do
     {switches, _, _} = OptionParser.parse(args, switches: [debug: :boolean])
