@@ -1,4 +1,8 @@
 defmodule Fryse.CLI.Serve do
+  use Fryse.Command
+
+  @shortdoc "Serves static files"
+
   @moduledoc false
 
   def run(args) do
