@@ -4,6 +4,8 @@ defmodule Fryse.Builder do
   alias Fryse.Renderer
   alias Fryse.Page
   alias Fryse.FilePath
+  alias Fryse.File, as: FryseFile
+  alias Fryse.Folder
 
   def build(%Fryse{} = fryse) do
     with :ok <- clean(fryse),
@@ -47,46 +49,48 @@ defmodule Fryse.Builder do
 
   defp copy_custom_files(_), do: :ok
 
-  defp build_content(%Fryse{content: content, destination_path: dp} = fryse) do
-    build_folder(content, fryse, dp)
-    |> List.flatten()
+  defp build_content(%Fryse{content: content} = fryse) do
+    extract_pages(content)
+    |> hydrate_pages(fryse)
+    |> Enum.map(&render_page(&1, fryse))
     |> sort_by_status()
   end
 
-  defp sort_by_status(file_events) do
-    Enum.reduce(file_events, %{ok: [], excluded: [], error: []}, fn {status, event}, acc ->
-      new_events = [event | Map.get(acc, status)]
-      Map.put(acc, status, new_events)
+  defp extract_pages(%Folder{children: children}) do
+    pages =
+      for child <- children do
+        case child do
+          %FryseFile{} ->
+            [%Page{file: child}]
+
+          %Folder{} ->
+            extract_pages(child)
+        end
+      end
+
+    pages
+    |> List.flatten()
+  end
+
+  defp hydrate_pages(pages, %Fryse{} = fryse) do
+    Enum.map(pages, fn page ->
+      path = FilePath.source_to_url(fryse.config, page.file.path)
+      # Fryse struct won't get added here due to memory consumption
+      %Page{ page | path: path}
     end)
   end
 
-  defp build_folder(%Fryse.Folder{children: children}, fryse, path) do
-    File.mkdir_p(path)
-
-    for entry <- children do
-      case entry do
-        %Fryse.File{} ->
-          render_file(entry, fryse)
-
-        %Fryse.Folder{} ->
-          build_folder(entry, fryse, Path.join(path, entry.name))
-      end
-    end
+  defp render_page(%Page{file: %FryseFile{excluded: true} = file}, _fryse) do
+    {:excluded, {:file, file.path}}
   end
+  defp render_page(%Page{file: file} = page, %Fryse{} = fryse) do
+    destination = Path.join(fryse.destination_path, FilePath.source_to_destination(fryse.config, file.path))
 
-  defp render_file(%Fryse.File{excluded: true} = file, _), do: {:excluded, {:file, file.path}}
-
-  defp render_file(file, %Fryse{destination_path: dp} = fryse) do
-    destination = Path.join(dp, FilePath.source_to_destination(fryse.config, file.path))
-
-    page = %Page{
-      fryse: fryse,
-      file: file,
-      path: FilePath.source_to_url(fryse.config, file.path)
-    }
+    # adding the Fryse struct here, at the very end, to reduce memory consumption
+    new_page = %Page{page | fryse: fryse}
 
     try do
-      Renderer.render_page(page, destination)
+      Renderer.render_page(new_page, destination)
       {:ok, {:file, file.path, destination}}
     rescue
       e ->
@@ -95,5 +99,12 @@ defmodule Fryse.Builder do
       e ->
         {:error, {:file, file.path, destination, e}}
     end
+  end
+
+  defp sort_by_status(file_events) do
+    Enum.reduce(file_events, %{ok: [], excluded: [], error: []}, fn {status, event}, acc ->
+      new_events = [event | Map.get(acc, status)]
+      Map.put(acc, status, new_events)
+    end)
   end
 end
