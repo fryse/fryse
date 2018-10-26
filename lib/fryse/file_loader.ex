@@ -42,8 +42,7 @@ defmodule Fryse.FileLoader do
     try do
       parsed =
         content
-        |> YamlElixir.read_from_string()
-        |> elem(1)
+        |> YamlElixir.read_from_string!()
         |> atom_key_map()
 
       {:ok, parsed}
