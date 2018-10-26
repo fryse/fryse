@@ -2,6 +2,8 @@ defmodule Fryse.Indexer do
   @moduledoc false
 
   alias Fryse.FileLoader
+  alias Fryse.ErrorBag
+  alias Fryse.Errors.MissingRequiredFile
 
   def index(path) do
     source_path = Path.expand(path)
@@ -10,7 +12,7 @@ defmodule Fryse.Indexer do
     with :ok <- check_required_files(source_path),
          {:ok, config} <- load_config(source_path),
          {:ok, data} <- load_data(source_path),
-         {:ok, content} <- load_content(source_path, source_path) do
+         {:ok, content} <- load_content(source_path) do
       fryse = %Fryse{
         config: config,
         data: data,
@@ -24,14 +26,32 @@ defmodule Fryse.Indexer do
   end
 
   defp check_required_files(path) do
-    with true <- File.exists?(Path.join(path, "config.yml")),
-         true <- File.exists?(Path.join(path, "data")),
-         true <- File.exists?(Path.join(path, "content")) do
-      :ok
-    else
-      _ ->
-        # TODO: Find out which files
-        {:error, "Some files/ folders are missing"}
+    files = [
+      {:file, "config.yml"},
+      {:folder, "data"},
+      {:folder, "content"}
+    ]
+
+    missing =
+      files
+      |> Enum.map(
+           fn {type, file_path} ->
+             {File.exists?(Path.join(path, file_path)), {type, file_path}}
+           end)
+      |> Enum.filter(fn {exists, _} -> exists == false end)
+      |> Enum.map(fn {_, file_info} -> file_info end)
+
+    case missing do
+      [] -> :ok
+      missing ->
+        errors = Enum.map(missing, fn {type, file_path} -> %MissingRequiredFile{type: type, path: file_path} end)
+
+        error_bag = %ErrorBag{
+          context: :required_files,
+          errors: errors
+        }
+
+        {:error, error_bag}
     end
   end
 
@@ -39,6 +59,9 @@ defmodule Fryse.Indexer do
     path
     |> Path.join("config.yml")
     |> FileLoader.load_file()
+    #TODO: Handle config merge with default config
+    #TODO: Handle config validation
+    #TODO: Think about theme config and its validation
   end
 
   defp load_data(path) do
@@ -56,11 +79,11 @@ defmodule Fryse.Indexer do
     {:ok, data}
   end
 
-  defp load_content(path, source_path) do
+  defp load_content(path) do
     content =
       path
       |> Path.join("content")
-      |> index_content_folder(source_path)
+      |> index_content_folder(path)
 
     {:ok, content}
   end
