@@ -41,6 +41,12 @@ defmodule Fryse.CLI.Build do
       IO.puts "- #{error}"
     end
   end
+  defp show_task_errors(:indexing, %ErrorBag{context: :config_validation, errors: errors}) do
+    IO.puts(red("Config validation failed:"))
+    for error <- errors do
+      IO.puts "- #{error}"
+    end
+  end
   defp show_task_errors(:script_loading, %ErrorBag{context: :compile, errors: errors}) do
     IO.puts(red("Loading script modules failed:"))
     for error <- errors do

@@ -1,6 +1,7 @@
 defmodule Fryse.Indexer do
   @moduledoc false
 
+  alias Fryse.Config
   alias Fryse.FileLoader
   alias Fryse.ErrorBag
   alias Fryse.Errors.MissingRequiredFile
@@ -46,22 +47,29 @@ defmodule Fryse.Indexer do
       missing ->
         errors = Enum.map(missing, fn {type, file_path} -> %MissingRequiredFile{type: type, path: file_path} end)
 
-        error_bag = %ErrorBag{
+        {:error, %ErrorBag{
           context: :required_files,
           errors: errors
-        }
-
-        {:error, error_bag}
+        }}
     end
   end
 
   defp load_config(path) do
-    path
-    |> Path.join("config.yml")
-    |> FileLoader.load_file()
-    #TODO: Handle config merge with default config
-    #TODO: Handle config validation
-    #TODO: Think about theme config and its validation
+    config_path = Path.join(path, "config.yml")
+
+    with {:ok, config} <- FileLoader.load_file(config_path),
+         merged_config <- Config.merge(config, Config.default_config()),
+         {:validation, :ok} <- {:validation, Config.validate(merged_config)} do
+
+      {:ok, merged_config}
+    else
+      {:validation, {:error, errors}} ->
+        {:error, %ErrorBag{
+          context: :config_validation,
+          errors: errors
+        }}
+      value -> value
+    end
   end
 
   defp load_data(path) do
