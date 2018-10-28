@@ -10,7 +10,8 @@ defmodule Fryse.Config do
   ]
 
   @default_config %{
-
+    theme: nil,
+    files: []
   }
 
   def validate(%{} = config) do
