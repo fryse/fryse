@@ -13,6 +13,7 @@ defmodule Fryse.Command do
     moduledoc = Module.get_attribute(env.module, :moduledoc)
 
     quote do
+      @doc false
       def moduledoc() do
         {_, moduledoc} = unquote(moduledoc)
         moduledoc

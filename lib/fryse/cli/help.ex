@@ -12,6 +12,7 @@ defmodule Fryse.CLI.Help do
       fryse help COMMAND    - prints full docs for the given command
   """
 
+  @doc false
   def run(args) do
     {_, args, _} = OptionParser.parse(args)
 

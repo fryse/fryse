@@ -12,6 +12,7 @@ defmodule Fryse.CLI.Build do
   The static files will be written to `_site`.
   """
 
+  @doc false
   def run(args) do
     {switches, _, _} = OptionParser.parse(args, switches: [debug: :boolean])
     debug = Keyword.get(switches, :debug, false)

@@ -15,6 +15,7 @@ defmodule Fryse.CLI.New do
 
   alias HTTPoison.Response
 
+  @doc false
   def run(args) when args in [[], ["new"]] do
     message = """
     Invalid Arguments

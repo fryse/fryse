@@ -5,6 +5,7 @@ defmodule Fryse.CLI.Serve do
 
   @moduledoc false
 
+  @doc false
   def run(args) do
     {switches, _, _} = OptionParser.parse(args, switches: [port: :integer])
 
