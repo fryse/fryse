@@ -1,6 +1,13 @@
 Changelog for Fryse 0.x
 =======================
 
+Fryse 0.2.1
+-----------
+
+Released: 2018-10-29. Notable changes:
+
+ - Fixed: Require `plug_cowboy` dependency
+ 
 Fryse 0.2.0
 -----------
 
