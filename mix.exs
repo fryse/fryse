@@ -47,7 +47,7 @@ defmodule Fryse.MixProject do
     [
       {:yaml_elixir, "~> 2.0"},
       {:earmark, "~> 1.2"},
-      {:cowboy, "~> 1.1"},
+      {:plug_cowboy, "~> 1.0"},
       {:plug, "~> 1.4"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.0"},
