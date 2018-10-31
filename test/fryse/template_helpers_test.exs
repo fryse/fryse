@@ -12,7 +12,7 @@ defmodule Fryse.TemplateHelpersTest do
     page = %Page{
       fryse: fryse,
       file: nil,
-      path: ""
+      url: ""
     }
 
     assert 2 = TemplateHelpers.files_from(page, "/posts") |> Enum.count()
@@ -91,7 +91,7 @@ defmodule Fryse.TemplateHelpersTest do
   test "is_active/2 returns if the given source file path is active", %{fryse: fryse} do
     page = %Page{
       fryse: fryse,
-      path: "/posts/your-new-fryse-blog.html"
+      url: "/posts/your-new-fryse-blog.html"
     }
 
     assert true == TemplateHelpers.is_active(page, "/posts/your-new-fryse-blog.md")
@@ -102,7 +102,7 @@ defmodule Fryse.TemplateHelpersTest do
   test "is_active/3 and is_active/4 return custom values for active and inactive", %{fryse: fryse} do
     page = %Page{
       fryse: fryse,
-      path: "/posts/your-new-fryse-blog.html"
+      url: "/posts/your-new-fryse-blog.html"
     }
 
     assert :active == TemplateHelpers.is_active(page, "/posts/your-new-fryse-blog.md", :active)
