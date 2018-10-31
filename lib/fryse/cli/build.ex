@@ -93,6 +93,12 @@ defmodule Fryse.CLI.Build do
     #TODO: no case clause matching: %UndefinedFunctionError{arity: 2, exports: nil, function: :author, module: FriseDefaultTheme, reason: nil}
     error_description =
       case error do
+        %KeyError{key: :path, term: %Fryse.Page{}} ->
+          "'@page.path' is deprecated, use '@page.url'"
+
+        %KeyError{key: key} ->
+          "Cannot access key '#{key}' (usage might be in layout file)"
+
         %{description: description, file: "nofile", line: line} ->
           "#{description} in #{source} on line #{line} (line counting starts below the frontmatter section)"
 

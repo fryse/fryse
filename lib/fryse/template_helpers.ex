@@ -122,7 +122,7 @@ defmodule Fryse.TemplateHelpers do
   def is_active(%Page{} = page, path, when_active), do: is_active(page, path, when_active, false)
 
   def is_active(%Page{} = page, path, when_active, when_inactive) do
-    if page.path == FilePath.source_to_url(page.fryse.config, to_string(path)) do
+    if page.url == FilePath.source_to_url(page.fryse.config, to_string(path)) do
       when_active
     else
       when_inactive
