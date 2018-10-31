@@ -3,5 +3,5 @@ defmodule Fryse.Page do
 
   defstruct fryse: nil,
             file: nil,
-            path: nil
+            url: nil
 end

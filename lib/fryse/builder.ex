@@ -74,9 +74,9 @@ defmodule Fryse.Builder do
 
   defp hydrate_pages(pages, %Fryse{} = fryse) do
     Enum.map(pages, fn page ->
-      path = FilePath.source_to_url(fryse.config, page.file.path)
+      url = FilePath.source_to_url(fryse.config, page.file.path)
       # Fryse struct won't get added here due to memory consumption
-      %Page{ page | path: path}
+      %Page{ page | url: url}
     end)
   end
 
