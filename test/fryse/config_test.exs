@@ -17,6 +17,19 @@ defmodule Fryse.ConfigTest do
     end
   end
 
+  describe "override/2" do
+    test "original and override values are merged" do
+      original = %{foo: "one", bar: "two"}
+      override = %{baz: "three"}
+      assert %{foo: "one", bar: "two", baz: "three"} = Config.override(original, override)
+    end
+    test "original values are overridden by override values" do
+      original = %{foo: "one", bar: "two"}
+      override = %{baz: "three", foo: "four"}
+      assert %{foo: "four", bar: "two", baz: "three"} = Config.override(original, override)
+    end
+  end
+
   describe "validate :theme key" do
     test "the key must be not nil" do
       assert %MissingConfigValue{key: :theme} = Config.validate_key(:theme, nil)

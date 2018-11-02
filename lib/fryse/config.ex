@@ -70,6 +70,12 @@ defmodule Fryse.Config do
     end)
   end
 
+  def override(config, config2) do
+    Map.merge(config, config2, fn _k, _v1, v2 ->
+      v2
+    end)
+  end
+
   defp only_errors(:ok), do: false
   defp only_errors(_), do: true
 
