@@ -1,6 +1,7 @@
 defmodule Fryse.Config do
   @moduledoc false
 
+  alias Fryse.ErrorBag
   alias Fryse.Errors.MissingConfigValue
   alias Fryse.Errors.InvalidConfigValue
 
@@ -22,7 +23,13 @@ defmodule Fryse.Config do
 
     case errors do
       [] -> :ok
-      errors -> {:error, errors}
+      errors ->
+        error_bag = %ErrorBag{
+          context: :validate,
+          errors: errors
+        }
+
+        {:error, error_bag}
     end
   end
 

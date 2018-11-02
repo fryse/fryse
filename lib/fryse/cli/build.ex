@@ -18,6 +18,7 @@ defmodule Fryse.CLI.Build do
     debug = Keyword.get(switches, :debug, false)
 
     with {:indexing, {:ok, %Fryse{} = fryse}} <- {:indexing, Fryse.index(".")},
+         {:config_validation, :ok}            <- {:config_validation, Fryse.validate_config(fryse)},
          {:script_loading, :ok}               <- {:script_loading, Fryse.load_scripts(fryse)},
          {:building, {:ok, results}}          <- {:building, Fryse.build(fryse)} do
       if debug do
@@ -42,7 +43,7 @@ defmodule Fryse.CLI.Build do
       IO.puts "- #{error}"
     end
   end
-  defp show_task_errors(:indexing, %ErrorBag{context: :config_validation, errors: errors}) do
+  defp show_task_errors(:config_validation, %ErrorBag{context: :validate, errors: errors}) do
     IO.puts(red("Config validation failed:"))
     for error <- errors do
       IO.puts "- #{error}"
