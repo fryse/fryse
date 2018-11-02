@@ -58,17 +58,9 @@ defmodule Fryse.Indexer do
     config_path = Path.join(path, "config.yml")
 
     with {:ok, config} <- FileLoader.load_file(config_path),
-         merged_config <- Config.merge(config, Config.default_config()),
-         {:validation, :ok} <- {:validation, Config.validate(merged_config)} do
+         merged_config <- Config.merge(config, Config.default_config()) do
 
       {:ok, merged_config}
-    else
-      {:validation, {:error, errors}} ->
-        {:error, %ErrorBag{
-          context: :config_validation,
-          errors: errors
-        }}
-      value -> value
     end
   end
 

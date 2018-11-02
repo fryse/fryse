@@ -1,6 +1,7 @@
 defmodule Fryse.Config do
   @moduledoc false
 
+  alias Fryse.ErrorBag
   alias Fryse.Errors.MissingConfigValue
   alias Fryse.Errors.InvalidConfigValue
 
@@ -22,7 +23,13 @@ defmodule Fryse.Config do
 
     case errors do
       [] -> :ok
-      errors -> {:error, errors}
+      errors ->
+        error_bag = %ErrorBag{
+          context: :validate,
+          errors: errors
+        }
+
+        {:error, error_bag}
     end
   end
 
@@ -60,6 +67,12 @@ defmodule Fryse.Config do
   def merge(config, default) do
     Map.merge(config, default, fn _k, v1, _v2 ->
       v1
+    end)
+  end
+
+  def override(config, config2) do
+    Map.merge(config, config2, fn _k, _v1, v2 ->
+      v2
     end)
   end
 
