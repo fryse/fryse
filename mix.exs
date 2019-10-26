@@ -5,7 +5,7 @@ defmodule Fryse.MixProject do
     [
       app: :fryse,
       version: "0.2.1",
-      elixir: "~> 1.6",
+      elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -46,12 +46,12 @@ defmodule Fryse.MixProject do
   defp deps do
     [
       {:yaml_elixir, "~> 2.0"},
-      {:earmark, "~> 1.2"},
-      {:plug_cowboy, "~> 1.0"},
-      {:plug, "~> 1.4"},
+      {:earmark, "~> 1.4"},
+      {:plug_cowboy, "~> 2.0"},
+      {:plug, "~> 1.8"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.0"},
-      {:ex_doc, "~> 0.18.0", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
 

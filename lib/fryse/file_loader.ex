@@ -39,14 +39,21 @@ defmodule Fryse.FileLoader do
   defp parse(content, _, _), do: {:ok, content}
 
   def parse_yaml(content, path) do
-    try do
-      parsed =
-        content
-        |> YamlElixir.read_from_string!()
-        |> atom_key_map()
+#    try do
+#      parsed =
+#        content
+#        |> YamlElixir.read_from_string!()
+#        |> atom_key_map()
+#
+#      {:ok, parsed}
+#    catch
+#      _ -> {:error, "#{path} not parsable"}
+#    end
 
-      {:ok, parsed}
-    catch
+    with {:ok, parsed} <- YamlElixir.read_from_string(content),
+         data <- atom_key_map(parsed) do
+      {:ok, data}
+    else
       _ -> {:error, "#{path} not parsable"}
     end
   end
