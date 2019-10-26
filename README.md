@@ -6,7 +6,7 @@
 
 ## Installation
 
-Make sure you have Elixir installed (1.6 or newer) and that `~/.mix/escripts` is in your PATH variable.
+Make sure you have Elixir installed (1.8 or newer) and that `~/.mix/escripts` is in your PATH variable.
 
 ```
 mix escript.install hex fryse
