@@ -14,7 +14,7 @@ defmodule Fryse.CLI.Help do
 
   @doc false
   def run(args) do
-    {_, args, _} = OptionParser.parse(args)
+    {_, args, _} = OptionParser.parse(args, strict: [])
 
     case args do
       ["help"] -> show_commands()

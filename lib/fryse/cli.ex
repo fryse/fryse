@@ -2,7 +2,7 @@ defmodule Fryse.CLI do
   @moduledoc false
 
   def main(args) do
-    parsed = OptionParser.parse(args)
+    parsed = OptionParser.parse(args, strict: [])
 
     case find_command(parsed) do
       {:error, :not_found} -> show_not_found_notice(parsed)
