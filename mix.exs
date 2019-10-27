@@ -49,8 +49,8 @@ defmodule Fryse.MixProject do
       {:earmark, "~> 1.4"},
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.8"},
-      {:poison, "~> 3.1"},
       {:httpoison, "~> 1.0"},
+      {:jason, "~> 1.1"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
