@@ -18,10 +18,15 @@ defmodule Fryse.Builder do
   end
 
   defp clean(%Fryse{destination_path: dp}) do
-    case File.rm_rf(dp) do
-      {:ok, _} -> :ok
-      {:error, reason, _} -> {:error, reason}
+    for path <- Path.wildcard(Path.join(dp, "**/*")) do
+      case File.rm_rf(path) do
+        {:ok, _} -> :ok
+        {:error, reason, _} -> {:error, reason}
+      end
     end
+
+    # TODO: filter through comprehension return value and look for errors
+    :ok
   end
 
   defp setup(%Fryse{destination_path: dp}), do: File.mkdir_p(dp)
