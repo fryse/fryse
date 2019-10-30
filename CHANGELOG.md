@@ -1,6 +1,18 @@
 Changelog for Fryse 0.x
 =======================
 
+Fryse 0.3.0
+-----------
+
+Released: 2019-10-30. Notable changes:
+
+ - Added: `path_prefix` config setting [#11](https://github.com/fryse/fryse/pull/11)
+ - Added: Config Override [#7](https://github.com/fryse/fryse/pull/7)
+ - Changed: Do not delete dot files when rebuilding page [#10](https://github.com/fryse/fryse/pull/10)
+ - Changed: Replace `poison` with `jason` [#9](https://github.com/fryse/fryse/pull/9)
+ - Changed: Rename `path` field on `Page` struct to `url` [#6](https://github.com/fryse/fryse/pull/6)
+ - Updated: Update dependencies and bump required Elixir version to 1.8 [#8](https://github.com/fryse/fryse/pull/8)
+
 Fryse 0.2.1
 -----------
 

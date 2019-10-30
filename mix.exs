@@ -4,7 +4,7 @@ defmodule Fryse.MixProject do
   def project do
     [
       app: :fryse,
-      version: "0.2.1",
+      version: "0.3.0",
       elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
