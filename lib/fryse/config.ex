@@ -6,11 +6,13 @@ defmodule Fryse.Config do
   alias Fryse.Errors.InvalidConfigValue
 
   @checked_keys [
+    :path_prefix,
     :theme,
     :files
   ]
 
   @default_config %{
+    path_prefix: nil,
     theme: nil,
     files: []
   }
@@ -31,6 +33,13 @@ defmodule Fryse.Config do
 
         {:error, error_bag}
     end
+  end
+
+  def validate_key(:path_prefix, value) when (is_binary(value) == false) and (is_nil(value) == false) do
+    %InvalidConfigValue{
+      key: :path_prefix,
+      recommendation: "Must be a string."
+    }
   end
 
   def validate_key(:theme, value) when value in [nil, ""] do

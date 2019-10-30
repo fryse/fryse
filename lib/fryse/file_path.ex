@@ -32,7 +32,7 @@ defmodule Fryse.FilePath do
 
   def source_to_url(config, "content" <> path), do: source_to_url(config, path)
 
-  def source_to_url(_config, path) do
+  def source_to_url(config, path) do
     path = Path.join("/", path)
 
     basename =
@@ -43,9 +43,22 @@ defmodule Fryse.FilePath do
 
     url_path = path |> String.replace(Path.basename(path), "")
 
-    case basename do
+    url = case basename do
       "index" -> url_path
       _ -> Path.join(url_path, [basename, ".html"])
     end
+
+    case path_prefix(config) do
+      "" -> url
+      prefix ->
+        case url do
+          "/" -> prefix
+          url -> Path.join(prefix, url)
+        end
+    end
   end
+
+  defp path_prefix(%{path_prefix: nil}), do: ""
+  defp path_prefix(%{path_prefix: prefix}), do: Path.join("/", prefix)
+  defp path_prefix(_), do: ""
 end
