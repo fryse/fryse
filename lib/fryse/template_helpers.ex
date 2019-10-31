@@ -8,6 +8,9 @@ defmodule Fryse.TemplateHelpers do
   alias Fryse.FilePath
   alias Fryse.Sort
 
+  def asset(%Page{fryse: %Fryse{config: %{path_prefix: p}}}, path) when is_nil(p) == false do
+    Path.join(["/", p, "/assets", to_string(path)])
+  end
   def asset(%Page{}, path), do: Path.join("/assets", to_string(path))
 
   def files_from(%Page{} = page, path), do: files_from(page, path, [])

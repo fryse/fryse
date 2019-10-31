@@ -6,6 +6,15 @@ defmodule Fryse.TemplateHelpersTest do
     assert "/assets/img/logo.png" = TemplateHelpers.asset(%Page{}, "/img/logo.png")
     assert "/assets/img/logo.png" = TemplateHelpers.asset(%Page{}, "img/logo.png")
     assert "/assets/img/logo.png" = TemplateHelpers.asset(%Page{}, 'img/logo.png')
+
+    page = %Page{
+      fryse: %Fryse{
+        config: %{
+          path_prefix: "custom"
+        }
+      }
+    }
+    assert "/custom/assets/img/logo.png" = TemplateHelpers.asset(page, "/img/logo.png")
   end
 
   test "files_from/2 returns files from the given folder", %{fryse: fryse} do
