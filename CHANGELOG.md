@@ -1,6 +1,13 @@
 Changelog for Fryse 0.x
 =======================
 
+Fryse 0.3.1
+-----------
+
+Released: 2019-10-31. Notable changes:
+
+ - Fixed: `path_prefix` handling in `asset/2` template helper function [#12](https://github.com/fryse/fryse/pull/12)
+
 Fryse 0.3.0
 -----------
 
