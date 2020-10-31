@@ -31,6 +31,7 @@ defmodule Fryse.TestCase do
       config: %{
         name: "Fryse Test Page",
         description: "Fryse Page for ExUnit Tests",
+        clean_urls: false,
         theme: "default",
         files: [
           %{from: "css", to: "assets/css"},

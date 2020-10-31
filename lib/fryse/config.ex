@@ -7,12 +7,14 @@ defmodule Fryse.Config do
 
   @checked_keys [
     :path_prefix,
+    :clean_urls,
     :theme,
     :files
   ]
 
   @default_config %{
     path_prefix: nil,
+    clean_urls: false,
     theme: nil,
     files: []
   }
@@ -39,6 +41,13 @@ defmodule Fryse.Config do
     %InvalidConfigValue{
       key: :path_prefix,
       recommendation: "Must be a string."
+    }
+  end
+
+  def validate_key(:clean_urls, value) when value not in [true, false] do
+    %InvalidConfigValue{
+      key: :clean_urls,
+      recommendation: "Must be a boolean."
     }
   end
 
