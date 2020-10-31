@@ -53,4 +53,16 @@ defmodule Fryse.ConfigTest do
       assert %InvalidConfigValue{key: :files} = Config.validate_key(:files, [%{from: nil, to: "/"}])
     end
   end
+
+  describe "validate :clean_urls key" do
+    test "the key must be a boolean" do
+      assert :ok = Config.validate_key(:clean_urls, true)
+      assert :ok = Config.validate_key(:clean_urls, false)
+      assert %InvalidConfigValue{key: :clean_urls} = Config.validate_key(:clean_urls, 1)
+      assert %InvalidConfigValue{key: :clean_urls} = Config.validate_key(:clean_urls, 0)
+      assert %InvalidConfigValue{key: :clean_urls} = Config.validate_key(:clean_urls, "")
+      assert %InvalidConfigValue{key: :clean_urls} = Config.validate_key(:clean_urls, "test")
+      assert %InvalidConfigValue{key: :clean_urls} = Config.validate_key(:clean_urls, nil)
+    end
+  end
 end

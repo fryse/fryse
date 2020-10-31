@@ -3,7 +3,7 @@ defmodule Fryse.FilePath do
 
   def source_to_destination(config, "content" <> path), do: source_to_destination(config, path)
 
-  def source_to_destination(_config, path) do
+  def source_to_destination(config, path) do
     name =
       path
       |> Path.basename()
@@ -27,7 +27,13 @@ defmodule Fryse.FilePath do
         _ -> path
       end
 
-    Path.join(path, [name, ".html"])
+    case config.clean_urls do
+      false -> Path.join(path, [name, ".html"])
+      true -> case name do
+                "index" -> Path.join([path, "index.html"])
+                _ -> Path.join([path, name, "index.html"])
+              end
+    end
   end
 
   def source_to_url(config, "content" <> path), do: source_to_url(config, path)
@@ -45,7 +51,10 @@ defmodule Fryse.FilePath do
 
     url = case basename do
       "index" -> url_path
-      _ -> Path.join(url_path, [basename, ".html"])
+      _ -> case config.clean_urls do
+            false -> Path.join(url_path, [basename, ".html"])
+            true -> Path.join([url_path, basename])
+           end
     end
 
     case path_prefix(config) do
