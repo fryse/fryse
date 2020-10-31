@@ -1,6 +1,14 @@
 Changelog for Fryse 0.x
 =======================
 
+Fryse 0.4.0
+-----------
+
+Released: 2020-10-31. Notable changes:
+
+- Added support for clean urls via the `clean_urls` (default `false`) config option [#18](https://github.com/fryse/fryse/pull/18)
+- Updated: Update dependencies [#16](https://github.com/fryse/fryse/pull/16)
+
 Fryse 0.3.1
 -----------
 
