@@ -1,6 +1,6 @@
 # Fryse
 
-[![Build Status](https://travis-ci.org/fryse/fryse.svg?branch=master)](https://travis-ci.org/fryse/fryse)
+![Test Status](https://github.com/fryse/fryse/actions/workflows/tests.yml/badge.svg)
 
 > Fryse is a Static Site Generator written in Elixir which aims to be generic and scriptable
 
