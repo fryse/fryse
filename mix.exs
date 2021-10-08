@@ -46,12 +46,13 @@ defmodule Fryse.MixProject do
   defp deps do
     [
       {:yaml_elixir, "~> 2.0"},
-      {:earmark, "~> 1.4"},
+      {:earmark, "1.4.10"},
+      {:mime, "1.6.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:plug, "~> 1.11"},
+      {:plug, "~> 1.12"},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:ex_doc, "~> 0.23", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.25", only: :dev, runtime: false}
     ]
   end
 
