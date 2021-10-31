@@ -37,6 +37,17 @@ defmodule Fryse.TestCase do
           %{from: "css", to: "assets/css"},
           %{from: "js", to: "assets/js"},
           %{from: "images", to: "assets/img"}
+        ],
+        paginations: [
+          %{
+            name: "posts",
+            from_folder: "posts",
+            size: 1,
+            sort: "order|desc",
+            path: "/posts/:page",
+            list_template: "/posts.html.eex",
+            first_page: "/posts.html.eex"
+          }
         ]
       },
       data: %{

@@ -16,7 +16,8 @@ defmodule Fryse.Config do
     path_prefix: nil,
     clean_urls: false,
     theme: nil,
-    files: []
+    files: [],
+    paginations: []
   }
 
   def validate(%{} = config) do

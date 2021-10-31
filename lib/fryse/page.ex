@@ -3,5 +3,6 @@ defmodule Fryse.Page do
 
   defstruct fryse: nil,
             file: nil,
-            url: nil
+            url: nil,
+            page_number: nil
 end
