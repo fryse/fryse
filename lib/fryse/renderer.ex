@@ -3,6 +3,7 @@ defmodule Fryse.Renderer do
 
   alias Fryse.Page
   alias Fryse.Document
+  alias Fryse.Pagination
 
   def render_page(%Page{} = page, destination) do
     content =
@@ -45,7 +46,22 @@ defmodule Fryse.Renderer do
     )
   end
 
-  def include(%Page{} = page, file, assigns) do
+  def render_pagination(%Page{fryse: fryse, page_number: page_number} = page, name, file, assigns \\ []) do
+    name = to_string(name)
+
+    case Pagination.config(name, fryse) do
+      {:error, :not_found} -> ""
+      {:ok, config} ->
+        {:ok, page_count} = Pagination.page_count(config, fryse)
+
+        all_assigns =
+          [pagination_config: config, total_pages: page_count, current_page: page_number || 1] ++ assigns
+
+        include(page, file, all_assigns)
+    end
+  end
+
+  def include(%Page{} = page, file, assigns \\ []) do
     path = Path.join([page.fryse.source_path, "themes/#{page.fryse.config.theme}/includes/", file])
 
     all_assigns =
@@ -65,20 +81,25 @@ defmodule Fryse.Renderer do
   defp functions() do
     [
       {Enum, [empty?: 1]},
-      {Fryse.Renderer, [include: 3, render: 2]},
-      {Fryse.TemplateHelpers,
-       [
-         asset: 2,
-         files_from: 2,
-         files_from: 3,
-         frontmatter: 1,
-         frontmatter: 2,
-         frontmatter: 3,
-         is_active: 2,
-         is_active: 3,
-         is_active: 4,
-         link_to: 2
-       ]}
+      {Fryse.Renderer, [include: 2, include: 3, render: 2, render_pagination: 3, render_pagination: 4]},
+      {
+        Fryse.TemplateHelpers,
+        [
+          asset: 2,
+          files_from: 2,
+          files_from: 3,
+          frontmatter: 1,
+          frontmatter: 2,
+          frontmatter: 3,
+          is_active: 2,
+          is_active: 3,
+          is_active: 4,
+          link_to: 2,
+          pagination: 2,
+          pagination_link: 3
+        ]
+      },
+      {Kernel, [+: 2, -: 2, ==: 2, !=: 2, <=: 2, >=: 2]}
     ]
   end
 end

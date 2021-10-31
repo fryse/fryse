@@ -1,12 +1,12 @@
 defmodule Fryse.TemplateHelpers do
   @moduledoc false
 
+  alias Fryse.Content
+  alias Fryse.Pagination
   alias Fryse.Page
   alias Fryse.File
-  alias Fryse.Folder
   alias Fryse.Document
   alias Fryse.FilePath
-  alias Fryse.Sort
 
   def asset(%Page{fryse: %Fryse{config: %{path_prefix: p}}}, path) when is_nil(p) == false do
     Path.join(["/", p, "/assets", to_string(path)])
@@ -18,87 +18,31 @@ defmodule Fryse.TemplateHelpers do
   def files_from(%Page{fryse: fryse}, path, options) do
     path = to_string(path)
 
-    pieces =
-      case String.starts_with?(path, "/") do
-        true -> path |> Path.split() |> Enum.drop(1)
-        false -> path |> Path.split()
-      end
-
-    case get_content_items(pieces, fryse.content.children, options) do
+    case Content.find_pages(path, fryse, options) do
+      {:ok, files} -> files
       {:error, :not_found} -> []
-      files -> files
     end
   end
 
-  defp get_content_items([], content, options) do
-    excluded = Keyword.get(options, :excluded, false)
-    index = Keyword.get(options, :index, false)
-    sort = Keyword.get(options, :sort, false)
-    offset = Keyword.get(options, :offset, false)
-    limit = Keyword.get(options, :limit, false)
+  def pagination(%Page{page_number: nil} = page, name), do: pagination(%Page{page | page_number: 1}, name)
 
-    content
-    |> files_filter_excluded(excluded)
-    |> files_filter_index(index)
-    |> files_sort(sort)
-    |> files_offset(offset)
-    |> files_limit(limit)
-  end
+  def pagination(%Page{fryse: fryse, page_number: page_number}, name) do
+    name = to_string(name)
 
-  defp get_content_items([name | path], content, options) do
-    folder = for %Folder{} = folder <- content, do: folder
-
-    sub =
-      folder
-      |> Enum.filter(fn %Folder{name: f_name} -> f_name == name end)
-      |> Enum.at(0)
-
-    case sub do
-      %Folder{children: children} -> get_content_items(path, children, options)
-      nil -> {:error, :not_found}
+    case Pagination.page_items(name, page_number, fryse) do
+      {:ok, items} -> items
+      {:error, :not_found} -> []
     end
   end
 
-  defp files_filter_excluded(content, excluded) do
-    case excluded do
-      true -> for %File{} = file <- content, do: file
-      false -> for %File{excluded: false} = file <- content, do: file
+  def pagination_link(%Page{fryse: fryse}, name, page_number) do
+    name = to_string(name)
+
+    case Pagination.listing_page_url(name, page_number, fryse) do
+      {:ok, url} -> url
+      {:error, :not_found} -> ""
     end
   end
-
-  defp files_filter_index(files, true), do: files
-
-  defp files_filter_index(files, false) do
-    files
-    |> Enum.reject(fn %File{name: name} -> name == "index" end)
-  end
-
-  defp files_sort(files, false), do: files
-
-  defp files_sort(files, arg) do
-    [key, sort] = Sort.parse(arg)
-
-    mapper = fn file -> Map.get(file.document.frontmatter, key, 0) end
-    sorter = Sort.function(sort)
-
-    Enum.sort_by(files, mapper, sorter)
-  end
-
-  defp files_offset(files, false), do: files
-
-  defp files_offset(files, offset) when is_integer(offset) do
-    files |> Enum.drop(offset)
-  end
-
-  defp files_offset(files, _), do: files
-
-  defp files_limit(files, false), do: files
-
-  defp files_limit(files, limit) when is_integer(limit) do
-    files |> Enum.take(limit)
-  end
-
-  defp files_limit(files, _), do: files
 
   def frontmatter(%File{document: document}), do: document.frontmatter
   def frontmatter(%Document{frontmatter: frontmatter}), do: frontmatter

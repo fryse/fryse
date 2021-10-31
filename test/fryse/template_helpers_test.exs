@@ -17,7 +17,7 @@ defmodule Fryse.TemplateHelpersTest do
     assert "/custom/assets/img/logo.png" = TemplateHelpers.asset(page, "/img/logo.png")
   end
 
-  test "files_from/2 returns files from the given folder", %{fryse: fryse} do
+  test "files_from/2 returns files from the given path", %{fryse: fryse} do
     page = %Page{
       fryse: fryse,
       file: nil,
@@ -28,7 +28,7 @@ defmodule Fryse.TemplateHelpersTest do
     assert 2 = TemplateHelpers.files_from(page, '/posts') |> Enum.count()
   end
 
-  test "files_from/3 returns files from the given folder and the given options", %{fryse: fryse} do
+  test "files_from/3 returns files from the given path and the given options", %{fryse: fryse} do
     page = %Page{
       fryse: fryse
     }
@@ -46,6 +46,42 @@ defmodule Fryse.TemplateHelpersTest do
 
     assert 1 = TemplateHelpers.files_from(page, "/posts", offset: 1) |> Enum.count()
     assert 1 = TemplateHelpers.files_from(page, "/posts", limit: 1) |> Enum.count()
+  end
+
+  test "pagination/2 returns files from the given page and pagination", %{fryse: fryse} do
+    page = %Page{
+      fryse: fryse,
+      file: nil,
+      url: "",
+      page_number: nil
+    }
+
+    assert 1 = TemplateHelpers.pagination(page, "posts") |> Enum.count()
+    assert 1 = TemplateHelpers.pagination(page, 'posts') |> Enum.count()
+
+    get_title = fn file ->
+      file
+      |> Map.get(:document)
+      |> Map.get(:frontmatter)
+      |> Map.get(:title)
+    end
+
+    assert "Second Post" = TemplateHelpers.pagination(page, "posts") |> Enum.at(0) |> get_title.()
+    assert "Second Post" = TemplateHelpers.pagination(%Page{page | page_number: 1}, "posts") |> Enum.at(0) |> get_title.()
+    assert "Welcome to Your New Fryse Website" = TemplateHelpers.pagination(%Page{page | page_number: 2}, "posts") |> Enum.at(0) |> get_title.()
+  end
+
+  test "pagination_link/2 returns the url for a given pagination and page", %{fryse: fryse} do
+    page = %Page{
+      fryse: fryse,
+      file: nil,
+      url: "",
+      page_number: nil
+    }
+
+    assert "/posts.html" = TemplateHelpers.pagination_link(page, "posts", 0)
+    assert "/posts.html" = TemplateHelpers.pagination_link(page, "posts", 1)
+    assert "/posts/2.html" = TemplateHelpers.pagination_link(page, "posts", 2)
   end
 
   test "frontmatter/1 returns the frontmatter based on various input structs" do

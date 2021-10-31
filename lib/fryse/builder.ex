@@ -2,6 +2,7 @@ defmodule Fryse.Builder do
   @moduledoc false
 
   alias Fryse.Renderer
+  alias Fryse.Pagination
   alias Fryse.Page
   alias Fryse.FilePath
   alias Fryse.File, as: FryseFile
@@ -56,6 +57,7 @@ defmodule Fryse.Builder do
 
   defp build_content(%Fryse{content: content} = fryse) do
     extract_pages(content)
+    |> add_paginated_pages(fryse)
     |> hydrate_pages(fryse)
     |> Enum.map(&render_page(&1, fryse))
     |> sort_by_status()
@@ -75,6 +77,18 @@ defmodule Fryse.Builder do
 
     pages
     |> List.flatten()
+  end
+
+  defp add_paginated_pages(pages, %Fryse{} = fryse) do
+    paginated_pages =
+      fryse.config.paginations
+      |> Enum.map(&(&1.name))
+      |> Enum.map(fn name ->
+        {:ok, pages} = Pagination.listing_pages(name, fryse)
+        pages
+      end)
+
+    [pages | paginated_pages] |> List.flatten()
   end
 
   defp hydrate_pages(pages, %Fryse{} = fryse) do
